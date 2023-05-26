@@ -14,23 +14,20 @@ export const appPkgExsit = (name: string): boolean => {
     return fs.existsSync(join(__dirname, '../../pkg/', name));
 };
 
-export const saveToConfig = (config: ServiceConfig) => {
+// apend service config
+export const appendToConfig = (config: WinServiceConfig) => {
     let serviceConfig = require(appConfigPath);
     if (serviceConfig) {
-        serviceConfig.push({
-            name: config.name,
-            config,
-            status: ServiceStatus.START,
-        });
+        serviceConfig.push(config);
     } else {
-        serviceConfig = [
-            {
-                name: config.name,
-                config,
-                status: ServiceStatus.START,
-            },
-        ];
+        serviceConfig = [config];
     }
+    console.log(serviceConfig, '==');
 
     writeFileSync(appConfigPath, JSON.stringify(serviceConfig, null, 4));
+};
+
+// rewirte service config
+export const writeToConfig = (config: Array<WinServiceConfig>) => {
+    writeFileSync(appConfigPath, JSON.stringify(config, null, 4));
 };

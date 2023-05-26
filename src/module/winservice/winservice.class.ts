@@ -9,5 +9,5 @@ export enum ServiceStatus {
 export type WinServiceConfig = {
     name: string;
     config: ServiceConfig;
-    staus: ServiceStatus;
+    status: ServiceStatus;
 };

@@ -1,12 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { join } from 'path';
-import { appPkgExsit, getAppPkgList, saveToConfig } from 'src/utils/tool';
+import { appPkgExsit, getAppPkgList, appendToConfig, writeToConfig } from 'src/utils/tool';
 import { Service, ServiceConfig } from 'node-windows';
 import { ServiceStatus, WinServiceConfig } from './winservice.class';
 import { fstat, writeFileSync } from 'fs';
+import { getServiceStatus } from 'src/utils/servicestatus';
 
 @Injectable()
 export class WinServiceService {
+    private readonly logger = new Logger(WinServiceService.name);
     private serviceList: WinServiceConfig[] = [];
     private serviceManager: Record<string, Service> = {};
 
@@ -21,10 +23,61 @@ export class WinServiceService {
         this.serviceList.forEach((serverConf: WinServiceConfig) => {
             this.serviceManager[serverConf.name] = new Service(serverConf.config);
         });
+
+        // sync config
+        this.syncServiceConfig();
     }
 
-    public getServiceList() {
+    // sync service status
+    private async syncServiceConfig() {
+        this.serviceList = this.serviceList.filter((app) => {
+            // delete not exist  service object
+            if (!this.serviceManager[app.name].exists) {
+                delete this.serviceManager[app.name];
+                return false;
+            }
+            return true;
+        });
+
+        // update service status
+        for (let i = 0; i < this.serviceList.length; i++) {
+            const app = this.serviceList[i];
+            const status = await getServiceStatus(`${app.name}.exe`);
+            this.serviceList[i].status = status;
+        }
+
+        this.logger.log(this.serviceList);
+
+        // write to config file
+        writeToConfig(this.serviceList);
+    }
+
+    public async getServiceList() {
+        await this.syncServiceConfig();
         return this.serviceList;
+    }
+
+    private addService(config: ServiceConfig, service: Service) {
+        const curServiceConfig = {
+            name: config.name,
+            config,
+            status: ServiceStatus.START,
+        };
+        this.serviceList.push(curServiceConfig);
+        this.serviceManager[config.name] = service;
+        writeToConfig(this.serviceList);
+    }
+
+    private removeService(name: string) {
+        const existServiceList = this.serviceList.filter((app) => (app.name == name ? false : true));
+        this.serviceList = existServiceList;
+        delete this.serviceManager[name];
+        writeToConfig(this.serviceList);
+    }
+
+    private updateServiceStatus(name: string, status: ServiceStatus) {
+        this.serviceList = this.serviceList.map((app) => (app.name == name ? { ...app, status } : app));
+        writeToConfig(this.serviceList);
     }
 
     // 注册 服务
@@ -33,16 +86,14 @@ export class WinServiceService {
 
         if (this.serviceManager[config.name]) throw Error(`${config.name} 服务已注册!`);
 
-        this.serviceManager[config.name] = new Service(config);
-
-        const curService = this.serviceManager[config.name];
+        const curService = new Service(config);
 
         try {
             return await new Promise((rs, rj) => {
                 curService.on('install', () => {
                     curService.start();
                     curService.removeAllListeners();
-                    saveToConfig(config);
+                    this.addService(config, curService);
                     rs('注册成功!');
                 });
                 curService.on('alreadyinstalled', () => {
@@ -63,15 +114,14 @@ export class WinServiceService {
 
     // 注销 服务
     public async unInstall(name: string) {
-        console.log(name);
-
         if (!this.serviceManager[name]) throw Error(`${name} 服务不存在!`);
 
         const curService = this.serviceManager[name];
-
         try {
             return await new Promise((rs, rj) => {
                 curService.on('uninstall', () => {
+                    // remove service
+                    this.removeService(name);
                     curService.removeAllListeners();
                     rs('注销成功!');
                 });
@@ -112,6 +162,7 @@ export class WinServiceService {
         try {
             return await new Promise((rs, rj) => {
                 curService.on('start', (err) => {
+                    this.updateServiceStatus(name, ServiceStatus.START);
                     curService.removeAllListeners();
                     rs('启动成功!');
                 });
@@ -134,6 +185,7 @@ export class WinServiceService {
         try {
             return await new Promise((rs, rj) => {
                 curService.on('stop', (err) => {
+                    this.updateServiceStatus(name, ServiceStatus.STOP);
                     curService.removeAllListeners();
                     rs('停止成功!');
                 });

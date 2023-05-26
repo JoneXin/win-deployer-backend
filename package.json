@@ -30,6 +30,7 @@
     "class-validator": "^0.14.0",
     "express-sse": "^0.5.3",
     "nest-winston": "^1.9.1",
+    "node-cmd": "^5.0.0",
     "node-windows": "^1.0.0-beta.8",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",

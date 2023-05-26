@@ -23,9 +23,6 @@ export class HttpInterceptor implements NestInterceptor {
         const now = Date.now();
         return next.handle().pipe(
             tap((data) => {
-                // 请求相应完后
-                console.log('请求返回');
-
                 return data;
             }),
             //   自定义全局错误补货

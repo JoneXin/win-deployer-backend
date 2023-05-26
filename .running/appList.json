@@ -6,7 +6,7 @@
             "maxRetries": 9999,
             "maxRestarts": 9999,
             "description": "test-service",
-            "script": "E:/my-open-project/windows-deploy/win-deployer-node/pkg/test-server/bin/www",
+            "script": "X:/my-open-project/win-steward/test-program/bin/www",
             "grow": 0,
             "wait": 3
         },
