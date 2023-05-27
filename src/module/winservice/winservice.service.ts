@@ -4,7 +4,7 @@ import { appPkgExsit, getAppPkgList, appendToConfig, writeToConfig } from 'src/u
 import { Service, ServiceConfig } from 'node-windows';
 import { ServiceStatus, WinServiceConfig } from './winservice.class';
 import { fstat, writeFileSync } from 'fs';
-import { getServiceStatus } from 'src/utils/servicestatus';
+import { getServiceInfo } from 'src/utils/serviceinfo';
 
 @Injectable()
 export class WinServiceService {
@@ -42,8 +42,9 @@ export class WinServiceService {
         // update service status
         for (let i = 0; i < this.serviceList.length; i++) {
             const app = this.serviceList[i];
-            const status = await getServiceStatus(`${app.name}.exe`);
+            const { status, pid } = await getServiceInfo(`${app.name}.exe`);
             this.serviceList[i].status = status;
+            this.serviceList[i].pid = pid;
         }
 
         this.logger.log(this.serviceList);
@@ -57,11 +58,13 @@ export class WinServiceService {
         return this.serviceList;
     }
 
-    private addService(config: ServiceConfig, service: Service) {
+    private async addService(config: ServiceConfig, service: Service) {
+        const { status, pid } = await getServiceInfo(`${config.name}.exe`);
         const curServiceConfig = {
             name: config.name,
             config,
-            status: ServiceStatus.START,
+            status,
+            pid,
         };
         this.serviceList.push(curServiceConfig);
         this.serviceManager[config.name] = service;
@@ -90,10 +93,10 @@ export class WinServiceService {
 
         try {
             return await new Promise((rs, rj) => {
-                curService.on('install', () => {
+                curService.on('install', async () => {
                     curService.start();
                     curService.removeAllListeners();
-                    this.addService(config, curService);
+                    await this.addService(config, curService);
                     rs('注册成功!');
                 });
                 curService.on('alreadyinstalled', () => {

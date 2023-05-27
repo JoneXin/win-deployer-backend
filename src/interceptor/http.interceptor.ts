@@ -7,9 +7,10 @@ import {
     HttpException,
     HttpStatus,
 } from '@nestjs/common';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, map, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Logger } from '@nestjs/common';
+import { ResponseMessage } from './api.transform.class';
 
 @Injectable()
 export class HttpInterceptor implements NestInterceptor {
@@ -22,8 +23,8 @@ export class HttpInterceptor implements NestInterceptor {
 
         const now = Date.now();
         return next.handle().pipe(
-            tap((data) => {
-                return data;
+            map((data) => {
+                return ResponseMessage.success(data);
             }),
             //   自定义全局错误补货
             catchError((err: Error) => {

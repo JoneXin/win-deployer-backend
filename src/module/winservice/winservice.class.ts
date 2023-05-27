@@ -10,4 +10,5 @@ export type WinServiceConfig = {
     name: string;
     config: ServiceConfig;
     status: ServiceStatus;
+    pid: number;
 };

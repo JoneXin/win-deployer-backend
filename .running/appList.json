@@ -6,10 +6,11 @@
             "maxRetries": 9999,
             "maxRestarts": 9999,
             "description": "test-service",
-            "script": "X:/my-open-project/win-steward/test-program/bin/www",
+            "script": "E:/my-open-project/windows-deploy/test-server/bin/www",
             "grow": 0,
             "wait": 3
         },
-        "status": "运行中"
+        "status": "停止",
+        "pid": 0
     }
 ]

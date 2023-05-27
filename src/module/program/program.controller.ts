@@ -22,7 +22,7 @@ export class ProgramController {
     constructor(private readonly programService: ProgramService) {}
 
     @Get('/')
-    getHello(@Query() p: string): string {
-        return this.programService.getHello();
+    getHello() {
+        return this.programService.getAppList();
     }
 }
