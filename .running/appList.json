@@ -1,16 +1,14 @@
 [
     {
-        "name": "aaaaaaaaaaaaaaa",
+        "name": "aaaaa_test_server",
         "config": {
-            "name": "aaaaaaaaaaaaaaa",
-            "maxRetries": 9999,
+            "name": "aaaaa_test_server",
             "maxRestarts": 9999,
-            "description": "test-service",
-            "script": "E:/my-open-project/windows-deploy/test-server/bin/www",
-            "grow": 0,
-            "wait": 3
+            "maxRetries": 9999,
+            "description": "test",
+            "script": "E:\\.temp\\aaaaa_test_server\\bin\\www"
         },
-        "status": "停止",
-        "pid": 0
+        "status": "运行中",
+        "pid": 25080
     }
 ]

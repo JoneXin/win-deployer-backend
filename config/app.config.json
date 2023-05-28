@@ -4,5 +4,6 @@
         "max_size": "2g",
         "max_files": "7d",
         "dirname": "./logs/"
-    }
+    },
+    "upload_path": "pkg"
 }

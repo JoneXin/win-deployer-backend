@@ -1,7 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { AuthGuard } from './guards/auth.guards';
-import { HttpInterceptor } from './interceptor/http.interceptor';
 import { JoneXinLogger } from './lib/logger';
 import { appConfig } from './config/app.config';
 

@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { join } from 'path';
-import { appPkgExsit, getAppPkgList, appendToConfig, writeToConfig } from 'src/utils/tool';
+import { appPkgExsit, getAppPkgList, writeToConfig } from 'src/utils/tool';
 import { Service, ServiceConfig } from 'node-windows';
 import { ServiceStatus, WinServiceConfig } from './winservice.class';
 import { fstat, writeFileSync } from 'fs';
@@ -58,6 +58,11 @@ export class WinServiceService {
         return this.serviceList;
     }
 
+    public async getServiceInfo(name: string) {
+        await this.syncServiceConfig();
+        return this.serviceList.find((v) => v.name == name);
+    }
+
     private async addService(config: ServiceConfig, service: Service) {
         const { status, pid } = await getServiceInfo(`${config.name}.exe`);
         const curServiceConfig = {
@@ -80,6 +85,8 @@ export class WinServiceService {
 
     private updateServiceStatus(name: string, status: ServiceStatus) {
         this.serviceList = this.serviceList.map((app) => (app.name == name ? { ...app, status } : app));
+        console.log(this.serviceList, '===');
+
         writeToConfig(this.serviceList);
     }
 
@@ -150,12 +157,7 @@ export class WinServiceService {
     // 重启 服务
     public async restart(name: string) {
         await this.stop(name);
-
-        return new Promise((rs, rj) => {
-            setTimeout(async () => {
-                rs(await this.start(name));
-            }, 3000);
-        });
+        await this.start(name);
     }
 
     // 开始 服务
@@ -165,9 +167,11 @@ export class WinServiceService {
         try {
             return await new Promise((rs, rj) => {
                 curService.on('start', (err) => {
-                    this.updateServiceStatus(name, ServiceStatus.START);
-                    curService.removeAllListeners();
-                    rs('启动成功!');
+                    setTimeout(async () => {
+                        await this.syncServiceConfig();
+                        curService.removeAllListeners();
+                        rs('启动成功!');
+                    }, 1000);
                 });
 
                 curService.on('error', (err) => {
@@ -187,10 +191,12 @@ export class WinServiceService {
         const curService = this.serviceManager[name];
         try {
             return await new Promise((rs, rj) => {
-                curService.on('stop', (err) => {
-                    this.updateServiceStatus(name, ServiceStatus.STOP);
-                    curService.removeAllListeners();
-                    rs('停止成功!');
+                curService.on('stop', async (err) => {
+                    setTimeout(async () => {
+                        await this.syncServiceConfig();
+                        curService.removeAllListeners();
+                        rs('停止成功!');
+                    }, 1000);
                 });
 
                 curService.on('error', (err) => {

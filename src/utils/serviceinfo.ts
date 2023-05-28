@@ -1,3 +1,4 @@
+import e from 'express';
 import { ServiceStatus } from '../module/winservice/winservice.class';
 
 var cmd = require('node-cmd');

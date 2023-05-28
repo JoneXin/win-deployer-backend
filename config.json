@@ -1,0 +1,10 @@
+{
+    "station_db": {
+        "piantieqian_db_config": {
+            "host": "172.16.1.172",
+            "user": "root",
+            "port": 3306,
+            "password": "root",
+            "database": "sheet0516"
+        }
+}

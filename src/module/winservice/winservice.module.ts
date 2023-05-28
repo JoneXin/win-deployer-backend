@@ -6,5 +6,6 @@ import { WinServiceService } from './winservice.service';
     imports: [],
     controllers: [WinServiceController],
     providers: [WinServiceService],
+    exports: [WinServiceService],
 })
 export class WinServiceModule {}

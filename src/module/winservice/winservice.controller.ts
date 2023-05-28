@@ -33,10 +33,10 @@ export class WinServiceController {
         return await this.winServiceService.install(config);
     }
 
-    @Get('/uninstall')
-    async uninstall(@Query('name') name: string) {
-        return await this.winServiceService.unInstall(name);
-    }
+    // @Get('/uninstall')
+    // async uninstall(@Query('name') name: string) {
+    //     return await this.winServiceService.unInstall(name);
+    // }
 
     @Get('/restart')
     async restart(@Query('name') name: string) {

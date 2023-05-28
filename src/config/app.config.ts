@@ -7,6 +7,7 @@ type AppConf = {
         max_files: string;
         dirname: string;
     };
+    upload_path: string;
 };
 
 export const appConfig: AppConf = {
