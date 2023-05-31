@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { join } from 'path';
 import { appPkgExsit, getAppPkgList, writeToConfig } from 'src/utils/tool';
-import { Service, ServiceConfig } from 'node-windows';
+import { LogMode, Service, ServiceConfig } from 'node-windows';
 import { ServiceStatus, WinServiceConfig } from './winservice.class';
 import { fstat, writeFileSync } from 'fs';
 import { getServiceInfo } from 'src/utils/serviceinfo';

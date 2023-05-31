@@ -1,14 +1,14 @@
 [
     {
-        "name": "aaaaa_test_server",
+        "name": "aa_test_server",
         "config": {
-            "name": "aaaaa_test_server",
+            "name": "aa_test_server",
             "maxRestarts": 9999,
             "maxRetries": 9999,
-            "description": "test",
-            "script": "E:\\.temp\\aaaaa_test_server\\bin\\www"
+            "description": "测试项目",
+            "script": "D:\\hzleaper_auto_install\\aa_test_server\\bin\\www"
         },
         "status": "运行中",
-        "pid": 25080
+        "pid": 18248
     }
 ]

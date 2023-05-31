@@ -15,3 +15,24 @@ export type NewProgramInfo = {
     grow: number;
     wait: number;
 };
+
+export type LogsReaderConf = {
+    logsPath: string;
+    startTime: string;
+    endTime: string;
+    pageSize: number;
+    pageNumber: number;
+};
+
+export type UpdateRunningConf = {
+    name: string;
+    deployPath: string;
+    config: Array<ProgramConfigType>;
+};
+
+export type UpdateProgramInfo = {
+    desc: string;
+    programPkg: string;
+    versionName: string;
+    name: string;
+};

@@ -2,12 +2,19 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ProgramModel } from 'src/entity/program.entity';
 import { VersionModel } from 'src/entity/version.eitity';
-import { NewProgramInfo, ProgramConfigType } from './program.class';
+import {
+    LogsReaderConf,
+    NewProgramInfo,
+    ProgramConfigType,
+    UpdateProgramInfo,
+    UpdateRunningConf,
+} from './program.class';
 import { appConfig } from '../../config/app.config';
-import { writeFileSync, ensureDirSync, existsSync, copyFileSync, removeSync } from 'fs-extra';
+import { writeFileSync, ensureDirSync, existsSync, copyFileSync, removeSync, rmSync, rmdirSync } from 'fs-extra';
 import { basename, extname, join, resolve } from 'path';
 import { compressFile, unCompressFile } from 'src/utils/compree';
 import { WinServiceService } from '../winservice/winservice.service';
+import { LogReader } from 'src/utils/logreader';
 
 @Injectable()
 export class ProgramService {
@@ -173,7 +180,6 @@ export class ProgramService {
         }
         // 压缩
         await compressFile(join(savePath, programName), join(savePath, pkgName));
-
         // 删除残余文件夹
         removeSync(join(savePath, programName));
 
@@ -196,5 +202,103 @@ export class ProgramService {
 
         // 删除压缩包
         removeSync(targetZipPath);
+    }
+
+    public async getProgramLogs(param: LogsReaderConf) {
+        try {
+            return await LogReader(param);
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    public async updateRunningConfig(param: UpdateRunningConf) {
+        const { config, name, deployPath } = param;
+        // 复制替换配置
+        for (let i = 0; i < config.length; i++) {
+            const { configContent, configPath } = config[i];
+            const confAbslutePath = join(deployPath, name, configPath);
+            writeFileSync(confAbslutePath, JSON.stringify(JSON.parse(configContent), null, 4));
+        }
+
+        // 重启服务
+        return await this.winServiceService.restart(name);
+    }
+
+    public async updateProgram(param: UpdateProgramInfo) {
+        const { programPkg, versionName, desc, name } = param;
+
+        // 查询程序的配置信息
+        const appInfo = await this.versionModel.findOne({
+            where: {
+                name,
+                isCurrent: 1,
+            },
+        });
+
+        if (versionName == appInfo.version) throw new Error('版本名重复！');
+        // 解压包 更新配置
+        const packagePath = await this.setConfig(programPkg, JSON.parse(appInfo.runningConfig), versionName);
+
+        // 注销运行的服务
+        try {
+            await this.winServiceService.stop(name);
+        } catch (error) {}
+        try {
+            await this.winServiceService.unInstall(name);
+        } catch (error) {}
+
+        // 删除程序
+        if (existsSync(join(appInfo.deployPath, name))) {
+            rmdirSync(join(appInfo.deployPath, name), { recursive: true });
+        }
+
+        // 拷贝到目标目录
+        await this.copyPkgToTargetPath(packagePath, appInfo.deployPath, programPkg);
+
+        // 启动服务
+        try {
+            this.winServiceService.install(JSON.parse(appInfo.programConfig));
+        } catch (error) {}
+
+        // db 新增版本信息 并回写当前 版本应用程序
+        //回写数据库
+        const transaction = await this.programModel.sequelize.transaction();
+        try {
+            await this.versionModel.update(
+                { isCurrent: 0 },
+                {
+                    where: {
+                        name,
+                        version: appInfo.version,
+                    },
+                    transaction,
+                },
+            );
+
+            const preVersionInfo = appInfo;
+            delete preVersionInfo.uid;
+
+            await this.versionModel.bulkCreate(
+                [
+                    {
+                        ...preVersionInfo,
+                        version: versionName,
+                        isCurrent: 1,
+                        desc,
+                        packagePath,
+                        genTime: Date.now(),
+                    },
+                ],
+                { transaction },
+            );
+
+            transaction.commit();
+        } catch (err) {
+            await transaction.rollback();
+            throw new Error(err);
+        }
+
+        return true;
     }
 }

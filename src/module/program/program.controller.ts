@@ -19,7 +19,7 @@ import { Response } from 'express';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { ProgramService } from './program.service';
-import { NewProgramInfo, ProgramConfigType } from './program.class';
+import { NewProgramInfo, ProgramConfigType, UpdateProgramInfo, UpdateRunningConf } from './program.class';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody } from '@nestjs/swagger';
 import { Express } from 'express';
@@ -54,6 +54,24 @@ export class ProgramController {
         console.log(param);
 
         return this.programService.addProgram({
+            ...param,
+            programPkg: param.programPkg[0].name,
+        });
+    }
+
+    @Post('/logs')
+    async getProgramLogs(@Body() param) {
+        return await this.programService.getProgramLogs(param);
+    }
+
+    @Post('/update_running_config')
+    async updateRunningConfig(@Body() param: UpdateRunningConf) {
+        return await this.programService.updateRunningConfig(param);
+    }
+
+    @Post('/update_program')
+    async updateProgram(@Body() param) {
+        return await this.programService.updateProgram({
             ...param,
             programPkg: param.programPkg[0].name,
         });

@@ -23,4 +23,6 @@ export class VersionModel extends Model {
     runningConfig!: string;
     @Column({ field: 'program_config', type: DataType.STRING(255) })
     programConfig!: string;
+    @Column({ field: 'desc', type: DataType.STRING(255) })
+    desc!: string;
 }
