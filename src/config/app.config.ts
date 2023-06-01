@@ -1,4 +1,5 @@
-const appConf = require('../../config/app.config.json');
+import { resolve } from 'path';
+const appConf = require(resolve('./config/app.config.json'));
 
 type AppConf = {
     port: number;

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ProgramModel } from 'src/entity/program.entity';
 import { VersionModel } from 'src/entity/version.eitity';
@@ -18,6 +18,7 @@ import { LogReader } from 'src/utils/logreader';
 
 @Injectable()
 export class ProgramService {
+    private readonly logger = new Logger(WinServiceService.name);
     constructor(
         private winServiceService: WinServiceService,
         @InjectModel(VersionModel, 'win_deployer')
@@ -133,7 +134,11 @@ export class ProgramService {
         // 拷贝到 发布目录
         await this.copyPkgToTargetPath(packagePath, deployPath, programPkg);
         // 启动服务
-        this.winServiceService.install(programConfig);
+        try {
+            this.winServiceService.install(programConfig);
+        } catch (error) {
+            this.logger.warn(error);
+        }
         //回写数据库
         const transaction = await this.programModel.sequelize.transaction();
         try {
@@ -243,10 +248,14 @@ export class ProgramService {
         // 注销运行的服务
         try {
             await this.winServiceService.stop(name);
-        } catch (error) {}
+        } catch (error) {
+            this.logger.warn(error);
+        }
         try {
             await this.winServiceService.unInstall(name);
-        } catch (error) {}
+        } catch (error) {
+            this.logger.warn(error);
+        }
 
         // 删除程序
         if (existsSync(join(appInfo.deployPath, name))) {
@@ -259,7 +268,9 @@ export class ProgramService {
         // 启动服务
         try {
             this.winServiceService.install(JSON.parse(appInfo.programConfig));
-        } catch (error) {}
+        } catch (error) {
+            this.logger.warn(error);
+        }
 
         // db 新增版本信息 并回写当前 版本应用程序
         //回写数据库
