@@ -8,11 +8,11 @@ import { WinServiceModule } from './module/winservice/winservice.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { mysqlConfig } from './config/mysql.config';
-import { join } from 'path';
+import { join, resolve } from 'path';
 @Module({
     imports: [
         ServeStaticModule.forRoot({
-            rootPath: join(__dirname, '../public'),
+            rootPath: resolve('./public'),
         }),
         SequelizeModule.forRoot(mysqlConfig),
         WinstonModule.forRootAsync({

@@ -35,8 +35,11 @@ export async function initLiaWebRoll() {
     try {
         for await (const dirent of dir) {
             const initSql = fs.readFileSync(join(sqlPath, dirent.name)).toString();
-            console.log(initSql);
-            const sqlps = initSql.split(';').filter((s) => !!s.trim());
+
+            const sqlps = initSql
+                .replaceAll('win_deployer', mysqlConfig.database)
+                .split(';')
+                .filter((s) => !!s.trim());
 
             for (let i = 0; i < sqlps.length; i++) {
                 await seq.query(sqlps[i], { transaction });

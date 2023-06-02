@@ -6,6 +6,7 @@ const disRootPath = path.resolve('./release');
 module.exports = {
     entry: {
         main: './src/main',
+        script: './script/service.script.js',
     },
     output: {
         filename: '[name].js',
@@ -37,6 +38,12 @@ module.exports = {
                 config: {
                     test: /[\\/]config[\\/]/,
                     name: 'js_config',
+                    // 选项：true/false。为true时，如果当前要提取的模块，在已经在打包生成的js文件中存在，则将重用该模块，而不是把当前要提取的模块打包生成新的js文件。
+                    reuseExistingChunk: true,
+                },
+                script: {
+                    test: /[\\/]script[\\/]/,
+                    name: 'script/service',
                     // 选项：true/false。为true时，如果当前要提取的模块，在已经在打包生成的js文件中存在，则将重用该模块，而不是把当前要提取的模块打包生成新的js文件。
                     reuseExistingChunk: true,
                 },
@@ -105,10 +112,10 @@ module.exports = {
         new ForkTsCheckerWebpackPlugin(),
         new CopyWebpackPlugin({
             patterns: [
-                // {
-                //     from: 'node_modules/bull/lib/commands',
-                //     to: path.resolve(disRootPath, 'node_modules', 'bull'),
-                // },
+                {
+                    from: 'node_modules/bull/lib/commands',
+                    to: path.resolve(disRootPath, 'node_modules', 'bull'),
+                },
                 {
                     from: 'public',
                     to: path.resolve(disRootPath, 'public'),
