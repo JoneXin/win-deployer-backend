@@ -1,11 +1,11 @@
-const { join } = require('path');
+const { join,resolve } = require('path');
 var Service = require('node-windows').Service;
 
 // Create a new service object
 var svc = new Service({
     name: 'win_deployer',
     description: 'win_deployer',
-    script: join(__dirname, '../dist/main.js'),
+    script: resolve('./main.js'),
     maxRestarts: 9999,
     maxRetries: 9999,
 });

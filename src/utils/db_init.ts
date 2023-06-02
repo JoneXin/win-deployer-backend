@@ -3,8 +3,10 @@ import { resolve } from 'path';
 const { join } = require('path');
 const fs = require('fs');
 const sequelize = require('sequelize');
-const mysqlConfig = require(resolve('./config/mysql.config.json'));
-const sqlPath = join(resolve('./sql'));
+import { readFileSync } from 'fs-extra';
+const mysqlConfig = JSON.parse(readFileSync(resolve('./config/mysql.config.json')).toString());
+const mysql2 = require('mysql2');
+const sqlPath = resolve('./sql');
 
 function getSeqInstance() {
     return new sequelize({
@@ -13,6 +15,7 @@ function getSeqInstance() {
         timezone: '+08:00',
         logging: false,
         query: { raw: true },
+        dialectModule: mysql2,
         host: mysqlConfig.host,
         port: mysqlConfig.port,
         username: mysqlConfig.username,

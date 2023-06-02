@@ -1,6 +1,8 @@
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-const pkg = require('../package.json');
+import { readFileSync } from 'fs-extra';
+import { resolve } from 'path';
+const pkg = JSON.parse(readFileSync(resolve('./package.json')).toString());
 
 export const setSwaggerDocument = (app: INestApplication) => {
     const options = new DocumentBuilder()

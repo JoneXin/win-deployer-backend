@@ -1,8 +1,9 @@
 import { SequelizeModuleAsyncOptions } from '@nestjs/sequelize';
 import { Dialect } from 'sequelize';
 import { resolve } from 'path';
-
-const conf = require(resolve('./config/mysql.config.json'));
+import { readFileSync } from 'fs-extra';
+const mysql2 = require('mysql2');
+const mysqlConf = readFileSync(resolve('./config/mysql.config.json'));
 
 export const mysqlConfig: SequelizeModuleAsyncOptions = {
     dialect: 'mysql' as Dialect,
@@ -12,5 +13,6 @@ export const mysqlConfig: SequelizeModuleAsyncOptions = {
     timezone: '+08:00',
     logging: true,
     query: { raw: true },
-    ...conf,
+    dialectModule: mysql2,
+    ...JSON.parse(mysqlConf.toString()),
 };

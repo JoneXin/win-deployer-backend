@@ -1,5 +1,6 @@
 import { resolve } from 'path';
-const appConf = require(resolve('./config/app.config.json'));
+import { readFileSync } from 'fs';
+const appConf = readFileSync(resolve('./config/app.config.json'));
 
 type AppConf = {
     port: number;
@@ -12,5 +13,5 @@ type AppConf = {
 };
 
 export const appConfig: AppConf = {
-    ...appConf,
+    ...JSON.parse(appConf.toString()),
 };

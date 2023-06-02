@@ -4,7 +4,9 @@ import * as winston from 'winston';
 import { LoggerService, LogLevel } from '@nestjs/common';
 import 'winston-daily-rotate-file';
 import { appConfig } from '../config/app.config';
-const pkg = require('../../package.json');
+import { resolve } from 'path';
+import { readFileSync } from 'fs-extra';
+const pkg = JSON.parse(readFileSync(resolve('./package.json')).toString());
 
 const customFormat = winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
