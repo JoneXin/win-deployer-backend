@@ -27,14 +27,7 @@ module.exports = {
                 vendor: {
                     test: /[\\/]node_modules[\\/]/,
                     name(module) {
-                        // get the name. E.g. node_modules/packageName/not/this/part.js
-                        // or node_modules/packageName
                         const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-                        // bull存在一些指令 需要一起同步
-                        if (packageName === 'bull') {
-                            return `node_modules/bull/index`;
-                        }
-                        // npm package names are URL-safe, but some servers don't like @ symbols
                         return `node_modules/${packageName.replace('@', '')}`;
                     },
                     reuseExistingChunk: true,
@@ -45,22 +38,10 @@ module.exports = {
                 //     // 选项：true/false。为true时，如果当前要提取的模块，在已经在打包生成的js文件中存在，则将重用该模块，而不是把当前要提取的模块打包生成新的js文件。
                 //     reuseExistingChunk: true,
                 // },
-
-                configEnv: {
-                    test: (module) => {
-                        const rule = new RegExp(/config\\config.(\S*).ts/, 'g');
-                        return (module.request || '').match(rule)?.length > 0;
-                    },
-                    name: (module) => {
-                        return '../config/' + path.parse(module?.request || '').name;
-                    },
-                    priority: 1,
-                },
             },
         },
     },
     target: 'node',
-    // 置为空即可忽略webpack-node-externals插件
     externals: {
         // mysql2: mysql2,
     },
