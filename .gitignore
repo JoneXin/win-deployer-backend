@@ -1,8 +1,8 @@
 # compiled output
 /dist
 /node_modules
-release
-pkg
+/release
+/pkg
 # Logs
 logs
 *.log

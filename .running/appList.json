@@ -6,9 +6,10 @@
             "maxRestarts": 9999,
             "maxRetries": 9999,
             "description": "测试项目",
-            "script": "D:\\hzleaper_auto_install\\aa_test_server\\bin\\www"
+            "script": "D:\\hzleaper_auto_install\\aa_test_server\\bin\\www",
+            "execPath": "C:\\Program Files\\nodejs\\node.exe"
         },
-        "status": "运行中",
-        "pid": 5568
+        "status": "停止",
+        "pid": 0
     }
 ]

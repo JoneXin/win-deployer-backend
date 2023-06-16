@@ -4,6 +4,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 // fork-ts-checker-webpack-plugin需要单独安装
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const disRootPath = path.resolve(__dirname, 'release/win_deployer');
+const WebpackBar = require('webpackbar');
+var nodeExternals = require('webpack-node-externals');
 
 module.exports = {
     entry: {
@@ -42,8 +44,13 @@ module.exports = {
         },
     },
     target: 'node',
+    context: __dirname,
+    node: {
+        __filename: false,
+        __dirname: false
+    },
     externals: {
-        // mysql2: mysql2,
+        "node-windows": "commonjs node-windows"
     },
     // ts文件的处理
     module: {
@@ -117,7 +124,16 @@ module.exports = {
                     from: 'package.json',
                     to: path.resolve(disRootPath, 'package.json'),
                 },
+                {
+                    from: 'node_modules/node-windows',
+                    to: path.resolve(disRootPath, 'node_modules/node-windows'),
+                },
             ],
         }),
+        new WebpackBar({
+            color: "#85d",  // 默认green，进度条颜色支持HEX
+            basic: false,   // 默认true，启用一个简单的日志报告器
+            profile: false,  // 默认false，启用探查器。
+        })
     ],
 };

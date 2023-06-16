@@ -144,7 +144,7 @@ export class WinServiceService {
 
                 curService.on('alreadyuninstalled', () => {
                     curService.removeAllListeners();
-                    rs(`${name}服务 不存在!`);
+                    rs(`${name}服务 已存在!`);
                 });
 
                 curService.uninstall();
