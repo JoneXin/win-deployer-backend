@@ -1,8 +1,8 @@
 {
-  "name": "nest_template",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "name": "win-deployer-backend",
+  "version": "0.1.0",
+  "description": "一个基于windows平台的 nodejs应用发布系统",
+  "author": "jone xin",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
