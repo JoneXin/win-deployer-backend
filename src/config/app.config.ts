@@ -10,6 +10,7 @@ type AppConf = {
         dirname: string;
     };
     upload_path: string;
+    collect_monitor_corn: string;
 };
 
 export const appConfig: AppConf = {

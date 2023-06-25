@@ -1,15 +1,14 @@
 [
     {
-        "name": "aa_test_server",
+        "name": "app_server",
         "config": {
-            "name": "aa_test_server",
+            "name": "app_server",
             "maxRestarts": 9999,
             "maxRetries": 9999,
-            "description": "测试项目",
-            "script": "D:\\hzleaper_auto_install\\aa_test_server\\bin\\www",
-            "execPath": "C:\\Program Files\\nodejs\\node.exe"
+            "description": "测试的程序",
+            "script": "D:\\hzleaper_auto_install\\app_server\\bin\\www"
         },
-        "status": "停止",
-        "pid": 0
+        "status": "运行中",
+        "pid": 26104
     }
 ]
