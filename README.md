@@ -1,4 +1,3 @@
-
 <h1 align="center">win-deployer</h1>
     <p align="center">
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
@@ -18,7 +17,7 @@
 
 ### 1，服务端架构图
 
-![](https://files.catbox.moe/vs45h2.png)
+![](https://files.catbox.moe/goyhju.png)
 
 ## 二，运行步骤
 
@@ -29,4 +28,5 @@
 ### 3.2，步骤
 
 ### 3.3，
+
 、
