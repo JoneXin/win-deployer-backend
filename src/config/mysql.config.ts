@@ -9,7 +9,7 @@ export const mysqlConfig: SequelizeModuleAsyncOptions = {
     dialect: 'mysql' as Dialect,
     name: 'win_deployer',
     autoLoadModels: true,
-    synchronize: false,
+    synchronize: true,
     timezone: '+08:00',
     logging: true,
     query: { raw: true },

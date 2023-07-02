@@ -9,8 +9,11 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { mysqlConfig } from './config/mysql.config';
 import { join, resolve } from 'path';
+import { MonitorModule } from './module/monitor/monitor.module';
+import { ScheduleModule } from '@nestjs/schedule';
 @Module({
     imports: [
+        ScheduleModule.forRoot(),
         ServeStaticModule.forRoot({
             rootPath: resolve('./public'),
         }),
@@ -20,6 +23,7 @@ import { join, resolve } from 'path';
         }),
         PrograModule,
         WinServiceModule,
+        MonitorModule,
     ],
     providers: [
         {

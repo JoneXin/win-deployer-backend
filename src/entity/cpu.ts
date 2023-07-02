@@ -4,7 +4,7 @@ export interface cpuAttributes {
     uid: number;
     cpuUsed?: number;
     cpuProcessUsed?: number;
-    programUid?: number;
+    programName?: string;
     time?: number;
 }
 
@@ -30,8 +30,8 @@ export class cpu extends Model<cpuAttributes, cpuAttributes> implements cpuAttri
     })
     cpuProcessUsed?: number;
 
-    @Column({ field: 'program_uid', allowNull: true, type: DataType.INTEGER, comment: '程序 表uid' })
-    programUid?: number;
+    @Column({ field: 'program_name', allowNull: true, type: DataType.STRING, comment: '程序名' })
+    programName?: string;
 
     @Column({ allowNull: true, type: DataType.BIGINT, comment: '记录时间' })
     time?: number;

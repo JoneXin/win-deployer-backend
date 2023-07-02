@@ -1,12 +1,13 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { MonitorService } from './monitor.service';
+import { MonitorQueryType } from './monitor.class';
 
 @Controller('/monitor')
 export class MonitorController {
     constructor(private readonly monitorService: MonitorService) {}
 
-    @Get('/monitor')
-    async getMemoryUseAge(@Param() serverName: string) {
-        return await this.monitorService.getMonitorInfo(serverName);
+    @Get('/data')
+    async getMemoryUseAge(@Query() param: MonitorQueryType) {
+        return await this.monitorService.getMonitorInfo(param);
     }
 }

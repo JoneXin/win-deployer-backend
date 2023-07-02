@@ -1,4 +1,4 @@
-const { join, resolve } = require('path');
+const { resolve } = require('path');
 var { Service, isAdminUser } = require('node-windows');
 
 const args = process.argv[2];
@@ -7,9 +7,11 @@ const args = process.argv[2];
 var svc = new Service({
     name: 'win_deployer',
     description: 'win_deployer',
-    script: join('./dist/main.js'),
+    script: resolve('./main.js'),
     maxRestarts: 9999,
     maxRetries: 9999,
+    grow: 0,
+    wait: 3,
 });
 
 isAdminUser((admin) => {

@@ -4,11 +4,12 @@ import { MonitorController } from './monitor.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { cpu } from '../../entity/cpu';
 import { memory } from '../../entity/memory';
+import { ProgramModel } from '../../entity/program.entity';
 
 @Module({
-    imports: [SequelizeModule.forFeature([cpu, memory], 'win_deployer')],
+    imports: [SequelizeModule.forFeature([cpu, memory, ProgramModel], 'win_deployer')],
     controllers: [MonitorController],
     providers: [MonitorService],
-    exports: [],
+    exports: [MonitorService],
 })
 export class MonitorModule {}

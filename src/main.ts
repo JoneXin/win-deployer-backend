@@ -1,8 +1,8 @@
+import { initLiaWebRoll } from './utils/db_init';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { JoneXinLogger } from './lib/logger';
 import { appConfig } from './config/app.config';
-import { initLiaWebRoll } from './utils/db_init';
 
 async function bootstrap() {
     // db init

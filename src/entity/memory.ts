@@ -4,9 +4,9 @@ export interface memoryAttributes {
     uid: number;
     memorySum?: number;
     memoryUsed?: number;
-    memoryProcessUsed?: number;
+    memoryProccessUsed?: number;
     time?: number;
-    programUid?: number;
+    programName?: string;
 }
 
 @Table({ tableName: 'memory', timestamps: false })
@@ -22,16 +22,16 @@ export class memory extends Model<memoryAttributes, memoryAttributes> implements
     memoryUsed?: number;
 
     @Column({
-        field: 'memory_process_used',
+        field: 'memory_proccess_used',
         allowNull: true,
         type: DataType.DOUBLE(40, 2),
         comment: '进程使用的内存 单位：MB',
     })
-    memoryProcessUsed?: number;
+    memoryProccessUsed?: number;
 
     @Column({ allowNull: true, type: DataType.BIGINT, comment: '记录时间' })
     time?: number;
 
-    @Column({ field: 'program_uid', allowNull: true, type: DataType.INTEGER, comment: '程序表 uid\n' })
-    programUid?: number;
+    @Column({ field: 'program_name', allowNull: true, type: DataType.STRING, comment: '程序名' })
+    programName?: string;
 }

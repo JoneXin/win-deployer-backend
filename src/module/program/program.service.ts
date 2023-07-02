@@ -15,6 +15,8 @@ import { basename, extname, join, resolve } from 'path';
 import { compressFile, unCompressFile } from 'src/utils/compree';
 import { WinServiceService } from '../winservice/winservice.service';
 import { LogReader } from 'src/utils/logreader';
+import { getServiceInfo } from 'src/utils/serviceinfo';
+import { ServiceStatus } from '../winservice/winservice.class';
 
 @Injectable()
 export class ProgramService {
@@ -120,13 +122,16 @@ export class ProgramService {
     public async addProgram(param: NewProgramInfo) {
         console.log(param);
 
-        const { programPkg, config, versionName, deployPath, maxRestarts, maxRetries, execPath, desc } = param;
+        const { programPkg, config, grow, wait, versionName, deployPath, maxRestarts, maxRetries, execPath, desc } =
+            param;
         const programName = programPkg.slice(0, programPkg.indexOf(extname(programPkg)));
         const programConfig = {
             name: programName,
             maxRestarts,
             maxRetries,
             description: desc,
+            grow,
+            wait,
             script: join(deployPath, programName, execPath),
         };
         // 更新配置文件
@@ -139,6 +144,30 @@ export class ProgramService {
         } catch (error) {
             this.logger.warn(error);
         }
+
+        // 轮询服务是否起来
+        let times = 0;
+
+        await new Promise((reslove, reject) => {
+            const timmer = setInterval(async () => {
+                try {
+                    const { status } = await getServiceInfo(`${programName}.exe`);
+                    console.log(status);
+
+                    if (status == ServiceStatus.START) {
+                        clearInterval(timmer);
+                        reslove(true);
+                    }
+
+                    if (times == 10) {
+                        clearInterval(timmer);
+                        reject(`10s 服务状态还是${status}`);
+                    }
+                } catch (error) {}
+                times++;
+            }, 1000);
+        });
+
         //回写数据库
         const transaction = await this.programModel.sequelize.transaction();
         try {
@@ -165,8 +194,6 @@ export class ProgramService {
             await transaction.rollback();
             throw new Error(err);
         }
-
-        return true;
     }
 
     // 替换配置

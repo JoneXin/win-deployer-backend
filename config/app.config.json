@@ -1,5 +1,5 @@
 {
-    "port": 80,
+    "port": 7777,
     "logs": {
         "max_size": "2g",
         "max_files": "7d",

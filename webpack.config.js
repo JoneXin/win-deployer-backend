@@ -10,7 +10,6 @@ var nodeExternals = require('webpack-node-externals');
 module.exports = {
     entry: {
         main: './src/main',
-        script: './script/service.js',
     },
     // 打包后的文件名称以及位置
     output: {
@@ -44,13 +43,13 @@ module.exports = {
         },
     },
     target: 'node',
-    context: __dirname,
+    // context: __dirname,
     node: {
         __filename: false,
-        __dirname: false
+        __dirname: false,
     },
     externals: {
-        "node-windows": "commonjs node-windows"
+        'node-windows': 'commonjs node-windows',
     },
     // ts文件的处理
     module: {
@@ -125,15 +124,19 @@ module.exports = {
                     to: path.resolve(disRootPath, 'package.json'),
                 },
                 {
-                    from: 'node_modules/node-windows',
-                    to: path.resolve(disRootPath, 'node_modules/node-windows'),
+                    from: 'script/service.js',
+                    to: path.resolve(disRootPath, 'script/service.js'),
+                },
+                {
+                    from: 'script/node_modules',
+                    to: path.resolve(disRootPath, 'node_modules'),
                 },
             ],
         }),
         new WebpackBar({
-            color: "#85d",  // 默认green，进度条颜色支持HEX
-            basic: false,   // 默认true，启用一个简单的日志报告器
-            profile: false,  // 默认false，启用探查器。
-        })
+            color: '#85d', // 默认green，进度条颜色支持HEX
+            basic: false, // 默认true，启用一个简单的日志报告器
+            profile: false, // 默认false，启用探查器。
+        }),
     ],
 };

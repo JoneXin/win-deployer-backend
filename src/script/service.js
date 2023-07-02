@@ -1,4 +1,4 @@
-const { join, resolve } = require('path');
+const { resolve } = require('path');
 var Service = require('node-windows').Service;
 
 export const main = () => {

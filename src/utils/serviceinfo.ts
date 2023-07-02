@@ -7,7 +7,7 @@ var cmd = require('node-cmd');
 export const getServiceInfo = async (name: string): Promise<{ status: ServiceStatus; pid: number }> => {
     try {
         const res: any = await new Promise((reslove, reject) => {
-            cmd.run(`sc queryex ${name}`, function (err, data, stderr) {
+            cmd.run(`sc queryex ${name}`, function (err: string, data: string, stderr: string) {
                 if (err) {
                     reject(err);
                 }
@@ -15,6 +15,8 @@ export const getServiceInfo = async (name: string): Promise<{ status: ServiceSta
                 if (stderr) {
                     reject(stderr);
                 }
+
+                if (data.includes('指定的服务未安装')) return ServiceStatus.UN_INSTALL;
 
                 const status = data
                     .split('\r\n')

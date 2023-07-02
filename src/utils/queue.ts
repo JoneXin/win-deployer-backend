@@ -1,8 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const schedule = require('node-schedule');
-import { Logger } from '@nestjs/common';
-import queue from 'queue';
 
+import { Logger } from '@nestjs/common';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const queue = require('queue');
 export class ScheduleQueue {
     public taskTag;
     public taskQueue;

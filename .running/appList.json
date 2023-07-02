@@ -5,10 +5,12 @@
             "name": "app_server",
             "maxRestarts": 9999,
             "maxRetries": 9999,
-            "description": "测试的程序",
+            "description": "测试股",
+            "grow": 0,
+            "wait": 3,
             "script": "D:\\hzleaper_auto_install\\app_server\\bin\\www"
         },
         "status": "运行中",
-        "pid": 26104
+        "pid": 29552
     }
 ]
