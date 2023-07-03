@@ -131,6 +131,22 @@ module.exports = {
                     from: 'script/node_modules',
                     to: path.resolve(disRootPath, 'node_modules'),
                 },
+                {
+                    from: 'script/关闭.bat',
+                    to: path.resolve(disRootPath, '关闭.bat'),
+                },
+                {
+                    from: 'script/启动.bat',
+                    to: path.resolve(disRootPath, '启动.bat'),
+                },
+                {
+                    from: 'script/注册服务.bat',
+                    to: path.resolve(disRootPath, '注册服务.bat'),
+                },
+                {
+                    from: 'script/注销.bat',
+                    to: path.resolve(disRootPath, '注销.bat'),
+                },
             ],
         }),
         new WebpackBar({
